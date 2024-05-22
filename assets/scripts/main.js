@@ -1,3 +1,5 @@
+// main.js
+
 // Run the init() function when the page has loaded
 window.addEventListener("DOMContentLoaded", init);
 
@@ -19,7 +21,7 @@ function init() {
  * @returns {Array<Object>} An array of recipes found in localStorage
  */
 function getRecipesFromStorage() {
-    return JSON.parse(localStorage.getItem('recipes')) || [];
+  return JSON.parse(localStorage.getItem('recipes')) || [];
 }
 
 /**
@@ -30,12 +32,12 @@ function getRecipesFromStorage() {
  * @param {Array<Object>} recipes An array of recipes
  */
 function addRecipesToDocument(recipes) {
-    const mainElement = document.querySelector('main');
-    recipes.forEach((recipe) => {
-        const recipeCard = document.createElement('recipe-card');
-        recipeCard.data = recipe;
-        mainElement.appendChild(recipeCard);
-    });
+  const mainElement = document.querySelector('main');
+  recipes.forEach((recipe) => {
+    const recipeCard = document.createElement('recipe-card');
+    recipeCard.data = recipe;
+    mainElement.appendChild(recipeCard);
+  });
 }
 
 /**
@@ -44,7 +46,7 @@ function addRecipesToDocument(recipes) {
  * @param {Array<Object>} recipes An array of recipes
  */
 function saveRecipesToStorage(recipes) {
-    localStorage.setItem('recipes', JSON.stringify(recipes));
+  localStorage.setItem('recipes', JSON.stringify(recipes));
 }
 
 /**
@@ -52,27 +54,28 @@ function saveRecipesToStorage(recipes) {
  * <button>.
  */
 function initFormHandler() {
-    const formElement = document.querySelector('form');
-    formElement.addEventListener('submit', (event) => {
-        event.preventDefault();
-        const formData = new FormData(formElement);
-        const recipeObject = {};
-        for (const [key, value] of formData.entries()) {
-            recipeObject[key] = value;
-        }
-        const recipeCard = document.createElement('recipe-card');
-        recipeCard.data = recipeObject;
-        const mainElement = document.querySelector('main');
-        mainElement.appendChild(recipeCard);
-        const recipes = getRecipesFromStorage();
-        recipes.push(recipeObject);
-        saveRecipesToStorage(recipes);
-    });
+  const formElement = document.querySelector('form');
+  const clearStorageButton = document.querySelector('#clear-storage');
 
-    const clearButton = document.querySelector('button[type="button"]');
-    clearButton.addEventListener('click', () => {
-        localStorage.clear();
-        const mainElement = document.querySelector('main');
-        mainElement.innerHTML = '';
+  // Add an event listener for the 'submit' event, which fires when the submit button is clicked
+  formElement.addEventListener('submit', (event) => {
+    event.preventDefault();
+    const formData = new FormData(formElement);
+    const recipeObject = {};
+    formData.forEach((value, key) => {
+      recipeObject[key] = value;
     });
+    const recipeCard = document.createElement('recipe-card');
+    recipeCard.data = recipeObject;
+    document.querySelector('main').appendChild(recipeCard);
+    const recipes = getRecipesFromStorage();
+    recipes.push(recipeObject);
+    saveRecipesToStorage(recipes);
+  });
+
+  // Add a click event listener to clear local storage button
+  clearStorageButton.addEventListener('click', () => {
+    localStorage.clear();
+    document.querySelector('main').innerHTML = '';
+  });
 }
